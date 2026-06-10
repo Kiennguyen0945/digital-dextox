@@ -14,6 +14,8 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
+import android.text.InputType
+import android.graphics.Color
 import java.util.Calendar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -189,7 +191,7 @@ class MainActivity : AppCompatActivity() {
             text = randomString
             textSize = 16f
             setPadding(20, 20, 20, 20)
-            setBackgroundColor(android.graphics.Color.parseColor("#EEEEEE"))
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
             setTextIsSelectable(false)
         }
         layout.addView(tvCode)
@@ -197,24 +199,34 @@ class MainActivity : AppCompatActivity() {
         // Dùng lớp NoPasteEditText đã code ở UC3
         val etInput = NoPasteEditText(this).apply {
             hint = "Nhập chính xác chuỗi trên"
-            inputType = android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD or android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+            inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
         }
         layout.addView(etInput)
 
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle("Xác thực kỷ luật")
             .setMessage(message)
             .setView(layout)
             .setCancelable(false)
-            .setPositiveButton("XÁC NHẬN") { _, _ ->
+            .setPositiveButton("XÁC NHẬN", null) // Để null để không tự động đóng
+            .setNegativeButton("QUAY LẠI", null)
+            .create()
+
+        // Can thiệp sự kiện Click sau khi dialog hiển thị để không bị mất text và không bị đóng
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 if (etInput.text.toString().trim() == randomString) {
+                    dialog.dismiss()
                     onSuccess()
                 } else {
-                    Toast.makeText(this, "Nhập sai! Vui lòng thử lại.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Nhập sai! Vui lòng kiểm tra lại lỗi sai của bạn.", Toast.LENGTH_SHORT).show()
                 }
             }
-            .setNegativeButton("QUAY LẠI", null)
-            .show()
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
+                dialog.dismiss() // Chỉ thoát khi bấm Quay lại
+            }
+        }
+        dialog.show()
     }
 
     private fun generateRandomString(length: Int): String {
