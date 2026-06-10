@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Digital Dextox</string>
+    <string name="accessibility_desc">Ứng dụng cần quyền này để hỗ trợ bạn cai nghiện điện thoại tốt hơn.</string>
+
 </resources>

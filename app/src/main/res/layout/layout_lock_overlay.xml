@@ -5,31 +5,97 @@
     android:background="#E6000000"
     android:clickable="true"
     android:focusable="true">
-    <!-- clickable và focusable true để chặn mọi tương tác xuống các app bên dưới -->
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ĐIỆN THOẠI ĐANG BỊ KHÓA"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp">
 
-        <TextView
-            android:id="@+id/tvCountdown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="00:00:00"
-            android:textColor="#FF5252"
-            android:textSize="48sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ĐIỆN THOẠI ĐANG BỊ KHÓA"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textAlignment="center"/>
+
+            <TextView
+                android:id="@+id/tvCountdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="00:00:00"
+                android:textColor="#FF5252"
+                android:textSize="48sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnUnlockEarly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="CÓ VIỆC GẤP? MỞ KHÓA SỚM"
+                android:backgroundTint="#555555" />
+
+            <!-- Khu vực nhập mã (ẩn mặc định) -->
+            <LinearLayout
+                android:id="@+id/layoutUnlockArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="24dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Gõ chính xác chuỗi sau để mở khóa:"
+                    android:textColor="#BBBBBB"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvRandomHash"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="#333333"
+                    android:padding="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"
+                    android:textIsSelectable="false" />
+
+                <com.example.digitaldextox.NoPasteEditText
+                    android:id="@+id/etHashInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Nhập lại chuỗi trên..."
+                    android:textColorHint="#888888"
+                    android:textColor="#FFFFFF"
+                    android:inputType="textVisiblePassword|textNoSuggestions"
+                    android:background="#222222"
+                    android:padding="16dp" />
+
+                <Button
+                    android:id="@+id/btnConfirmUnlock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="XÁC NHẬN"
+                    android:backgroundTint="#4CAF50" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>
