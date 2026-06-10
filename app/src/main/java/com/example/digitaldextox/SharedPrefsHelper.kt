@@ -40,12 +40,9 @@ class SharedPrefsHelper(context: Context) {
         return prefs.getBoolean("HAS_SCHEDULE", false)
     }
 
-    fun clearSchedule() {
+    // Chỉ xóa trạng thái lịch, giữ lại giờ đã cài đặt
+    fun clearScheduleStatus() {
         prefs.edit().apply {
-            remove("START_H")
-            remove("START_M")
-            remove("END_H")
-            remove("END_M")
             putBoolean("HAS_SCHEDULE", false)
         }.commit()
     }

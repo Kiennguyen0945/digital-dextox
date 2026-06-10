@@ -172,7 +172,7 @@ class LockService : Service() {
         sharedPrefsHelper.clearTargetUnlockTime()
         // Khi mở khóa bằng mã, ta coi như người dùng đã vượt qua thử thách.
         // Xóa lịch trình và hủy báo thức để họ có thể thay đổi cài đặt/lịch trình ngay lập tức.
-        sharedPrefsHelper.clearSchedule()
+        sharedPrefsHelper.clearScheduleStatus() // Chỉ xóa trạng thái lịch, giữ lại giờ đã cài
         cancelScheduledAlarm()
         stopSelf() // Sẽ gọi hàm onDestroy()
     }

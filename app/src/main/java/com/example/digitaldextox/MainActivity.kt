@@ -87,15 +87,14 @@ class MainActivity : AppCompatActivity() {
 
         // --- Bổ sung Logic Chọn giờ và Lưu lịch trình ---
         
-        if (sharedPrefsHelper.hasSchedule()) {
-            val start = sharedPrefsHelper.getScheduleStart()
-            val end = sharedPrefsHelper.getScheduleEnd()
-            startHour = start.first
-            startMinute = start.second
-            endHour = end.first
-            endMinute = end.second
-            updateTimeButtonsUI(btnStartTime, btnEndTime)
-        }
+        // Luôn tải giờ đã lưu (hoặc mặc định) khi Activity khởi tạo
+        val start = sharedPrefsHelper.getScheduleStart()
+        val end = sharedPrefsHelper.getScheduleEnd()
+        startHour = start.first
+        startMinute = start.second
+        endHour = end.first
+        endMinute = end.second
+        updateTimeButtonsUI(btnStartTime, btnEndTime)
 
         btnStartTime.setOnClickListener {
             TimePickerDialog(this, { _, h, m ->
@@ -176,7 +175,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         showChallengeDialog("Để HỦY lịch khóa, hãy nhập mã dưới đây:") {
-            sharedPrefsHelper.clearSchedule()
+            sharedPrefsHelper.clearScheduleStatus() // Chỉ xóa trạng thái lịch, giữ lại giờ đã cài
             
             // Hủy báo thức
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -383,6 +382,9 @@ class MainActivity : AppCompatActivity() {
      */
     private fun updateDifficultySettingsState(etHashLength: EditText, btnSaveHashLength: Button) {
         val tvDifficultyHint = findViewById<TextView>(R.id.tvDifficultyHint)
+        val btnStartTime = findViewById<Button>(R.id.btnStartTime)
+        val btnEndTime = findViewById<Button>(R.id.btnEndTime)
+        val btnSaveSchedule = findViewById<Button>(R.id.btnSaveSchedule)
         val hasSchedule = sharedPrefsHelper.hasSchedule()
 
         etHashLength.isEnabled = !hasSchedule
@@ -391,9 +393,18 @@ class MainActivity : AppCompatActivity() {
         btnSaveHashLength.isEnabled = !hasSchedule
         btnSaveHashLength.alpha = if (hasSchedule) 0.4f else 1.0f
 
+        // Vô hiệu hóa và làm mờ các nút chọn giờ khi đã có lịch trình
+        btnStartTime.isEnabled = !hasSchedule
+        btnStartTime.alpha = if (hasSchedule) 0.4f else 1.0f
+        btnEndTime.isEnabled = !hasSchedule
+        btnEndTime.alpha = if (hasSchedule) 0.4f else 1.0f
+        btnSaveSchedule.isEnabled = !hasSchedule
+        btnSaveSchedule.alpha = if (hasSchedule) 0.4f else 1.0f // Vô hiệu hóa nút Lưu lịch
+        
+
         if (hasSchedule) {
             tvDifficultyHint.visibility = TextView.VISIBLE
-            tvDifficultyHint.text = "⚠ Đã có lịch khóa. Hủy lịch trước để thay đổi độ khó."
+            tvDifficultyHint.text = "⚠ Đã có lịch khóa. Hủy lịch trước để thay đổi cài đặt."
         } else {
             tvDifficultyHint.visibility = TextView.GONE
         }
