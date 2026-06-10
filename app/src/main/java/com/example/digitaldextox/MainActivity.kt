@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -57,6 +58,9 @@ class MainActivity : AppCompatActivity() {
 
         // --- Logic lưu độ khó ---
         etHashLength.setText(sharedPrefsHelper.getHashLength().toString())
+
+        // Nếu đã có lịch, vô hiệu hóa phần cài đặt độ khó
+        updateDifficultySettingsState(etHashLength, btnSaveHashLength)
 
         btnSaveHashLength.setOnClickListener {
             saveCurrentHashLength(etHashLength)
@@ -173,6 +177,11 @@ class MainActivity : AppCompatActivity() {
             val pendingIntent = PendingIntent.getBroadcast(this, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             alarmManager.cancel(pendingIntent)
 
+            // Mở lại phần cài đặt độ khó sau khi hủy lịch
+            val etHashLength = findViewById<EditText>(R.id.etHashLength)
+            val btnSaveHashLength = findViewById<Button>(R.id.btnSaveHashLength)
+            updateDifficultySettingsState(etHashLength, btnSaveHashLength)
+
             Toast.makeText(this, "Đã hủy lịch trình!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -247,6 +256,11 @@ class MainActivity : AppCompatActivity() {
         saveCurrentHashLength(etHashLength)
         sharedPrefsHelper.saveSchedule(startHour, startMinute, endHour, endMinute)
         scheduleLockLogic()
+
+        // Vô hiệu hóa cài đặt độ khó sau khi lưu lịch
+        val btnSaveHashLength = findViewById<Button>(R.id.btnSaveHashLength)
+        updateDifficultySettingsState(etHashLength, btnSaveHashLength)
+
         Toast.makeText(this, "Đã lưu lịch trình thành công!", Toast.LENGTH_SHORT).show()
     }
 
@@ -352,5 +366,28 @@ class MainActivity : AppCompatActivity() {
             startService(serviceIntent)
         }
         finish() // Thoát activity để test overlay
+    }
+
+    /**
+     * Cập nhật trạng thái khu vực cài đặt độ khó:
+     * - Nếu đã có lịch: vô hiệu hóa EditText và Button, hiển thị ghi chú cảnh báo.
+     * - Nếu chưa có lịch: kích hoạt lại bình thường.
+     */
+    private fun updateDifficultySettingsState(etHashLength: EditText, btnSaveHashLength: Button) {
+        val tvDifficultyHint = findViewById<TextView>(R.id.tvDifficultyHint)
+        val hasSchedule = sharedPrefsHelper.hasSchedule()
+
+        etHashLength.isEnabled = !hasSchedule
+        etHashLength.alpha = if (hasSchedule) 0.4f else 1.0f
+
+        btnSaveHashLength.isEnabled = !hasSchedule
+        btnSaveHashLength.alpha = if (hasSchedule) 0.4f else 1.0f
+
+        if (hasSchedule) {
+            tvDifficultyHint.visibility = TextView.VISIBLE
+            tvDifficultyHint.text = "⚠ Đã có lịch khóa. Hủy lịch trước để thay đổi độ khó."
+        } else {
+            tvDifficultyHint.visibility = TextView.GONE
+        }
     }
 }

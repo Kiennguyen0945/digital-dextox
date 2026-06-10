@@ -109,6 +109,18 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
+        <!-- Ghi chú cảnh báo khi đã có lịch (ẩn mặc định) -->
+        <TextView
+            android:id="@+id/tvDifficultyHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:padding="10dp"
+            android:background="#FFF3CD"
+            android:textColor="#856404"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
