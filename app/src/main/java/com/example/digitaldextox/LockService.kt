@@ -1,8 +1,10 @@
 package com.example.digitaldextox
 
+import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -168,7 +170,23 @@ class LockService : Service() {
 
     private fun unlockAndStop() {
         sharedPrefsHelper.clearTargetUnlockTime()
+        // Khi mở khóa bằng mã, ta coi như người dùng đã vượt qua thử thách.
+        // Xóa lịch trình và hủy báo thức để họ có thể thay đổi cài đặt/lịch trình ngay lập tức.
+        sharedPrefsHelper.clearSchedule()
+        cancelScheduledAlarm()
         stopSelf() // Sẽ gọi hàm onDestroy()
+    }
+
+    private fun cancelScheduledAlarm() {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, AlarmReceiver::class.java).apply {
+            action = "ACTION_START_LOCK"
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, 100, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.cancel(pendingIntent)
     }
 
     override fun onDestroy() {

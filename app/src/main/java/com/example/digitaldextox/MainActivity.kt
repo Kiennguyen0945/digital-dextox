@@ -122,6 +122,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Cập nhật lại trạng thái UI (mở khóa fields) nếu lịch trình đã bị xóa từ LockService
+        val etHashLength = findViewById<EditText>(R.id.etHashLength)
+        val btnSaveHashLength = findViewById<Button>(R.id.btnSaveHashLength)
+        updateDifficultySettingsState(etHashLength, btnSaveHashLength)
+    }
+
     private fun handleSaveScheduleClick() {
         if (!Settings.canDrawOverlays(this)) {
             requestOverlayPermission()
